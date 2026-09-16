@@ -224,15 +224,16 @@ with tab_tsne:
     plot_df = pd.DataFrame({
         "tSNE_1": tsne_coords[:, 0], "tSNE_2": tsne_coords[:, 1],
         "Partition": partition_labels, "Activity": activity_data,
-        "SMILES": smiles_data, "MoleculeImage": b64_images,
+        "MoleculeImage": b64_images,
     })
+    plot_df["Compound"] = np.arange(1, len(plot_df) + 1)
     plot_df["Color"] = plot_df["Partition"].map({"Train": "#1f77b4", "Test": "#ff7f0e"})
 
     source = ColumnDataSource(plot_df)
     fig_tsne = figure(
         height=680,
         sizing_mode="stretch_width",
-        tools="pan,wheel_zoom,box_zoom,reset,save",
+        tools="pan,wheel_zoom,box_zoom,reset,save,crosshair",
         x_axis_label="t-SNE Dimension 1",
         y_axis_label="t-SNE Dimension 2",
         toolbar_location="above",
@@ -241,13 +242,16 @@ with tab_tsne:
         x="tSNE_1", y="tSNE_2", source=source, size=8,
         color="Color",
         alpha=0.8, legend_field="Partition",
+        selection_color="#f4c542", selection_alpha=1.0,
+        nonselection_alpha=0.25,
     )
     fig_tsne.add_tools(HoverTool(
         tooltips="""
             <div>
-                <div><strong>@SMILES</strong></div>
+                <div><strong>Compound #@Compound</strong></div>
                 <div>Partition: @Partition</div>
                 <div>Activity: @Activity{0.00}</div>
+                <div>t-SNE: (@tSNE_1{0.00}, @tSNE_2{0.00})</div>
                 <div><img src="@MoleculeImage" width="150" height="150"></div>
             </div>
         """,
