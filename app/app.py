@@ -191,6 +191,9 @@ else:
 partition_labels = np.array(["Unassigned"] * len(df))
 partition_labels[train_idx] = "Train"
 partition_labels[test_idx] = "Test"
+cliff_degrees = getattr(splitter, "cliff_degrees", np.zeros(len(df), dtype=int))
+if len(cliff_degrees) != len(df):
+    cliff_degrees = np.zeros(len(df), dtype=int)
 
 model, preds, metrics = train_and_eval_regressor(
     fps[train_idx], activity_data[train_idx],
@@ -227,7 +230,32 @@ with tab_tsne:
         "MoleculeImage": b64_images,
     })
     plot_df["Compound"] = np.arange(1, len(plot_df) + 1)
-    plot_df["Color"] = plot_df["Partition"].map({"Train": "#1f77b4", "Test": "#ff7f0e"})
+    plot_df["CliffDegree"] = cliff_degrees
+    plot_df["CliffStatus"] = np.where(
+        plot_df["CliffDegree"] > 0, "Activity cliff molecule", "Non-cliff molecule"
+    )
+    if split_type == "Activity Cliff Split":
+        plot_df["Color"] = np.select(
+            [
+                (plot_df["CliffDegree"] > 0) & (plot_df["Partition"] == "Train"),
+                (plot_df["CliffDegree"] > 0) & (plot_df["Partition"] == "Test"),
+                plot_df["Partition"] == "Train",
+            ],
+            ["#d62728", "#9467bd", "#1f77b4"],
+            default="#ff7f0e",
+        )
+        plot_df["PlotGroup"] = np.select(
+            [
+                (plot_df["CliffDegree"] > 0) & (plot_df["Partition"] == "Train"),
+                (plot_df["CliffDegree"] > 0) & (plot_df["Partition"] == "Test"),
+                plot_df["Partition"] == "Train",
+            ],
+            ["Cliff / Train", "Cliff / Test", "Non-cliff / Train"],
+            default="Non-cliff / Test",
+        )
+    else:
+        plot_df["Color"] = plot_df["Partition"].map({"Train": "#1f77b4", "Test": "#ff7f0e"})
+        plot_df["PlotGroup"] = plot_df["Partition"]
 
     source = ColumnDataSource(plot_df)
     fig_tsne = figure(
@@ -241,7 +269,7 @@ with tab_tsne:
     fig_tsne.scatter(
         x="tSNE_1", y="tSNE_2", source=source, size=8,
         color="Color",
-        alpha=0.8, legend_field="Partition",
+        alpha=0.8, legend_field="PlotGroup",
         selection_color="#f4c542", selection_alpha=1.0,
         nonselection_alpha=0.25,
     )
@@ -250,6 +278,7 @@ with tab_tsne:
             <div>
                 <div><strong>Compound #@Compound</strong></div>
                 <div>Partition: @Partition</div>
+                <div>@CliffStatus (degree: @CliffDegree)</div>
                 <div>Activity: @Activity{0.00}</div>
                 <div>t-SNE: (@tSNE_1{0.00}, @tSNE_2{0.00})</div>
                 <div><img src="@MoleculeImage" width="150" height="150"></div>

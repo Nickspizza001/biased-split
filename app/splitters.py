@@ -98,6 +98,7 @@ class ActivityCliffSplitter:
         self.sim_thresh = similarity_threshold
         self.act_thresh = activity_threshold
         self.test_fraction = test_fraction
+        self.cliff_degrees = np.array([], dtype=int)
 
     def split(self, smiles_list, activity_values, intended_bias, random_seed=42):
         rng = np.random.default_rng(random_seed)
@@ -111,6 +112,7 @@ class ActivityCliffSplitter:
         cliff_edges = find_cliff_edges(sim_mat, activity_values, self.sim_thresh, self.act_thresh)
         rng.shuffle(cliff_edges)
         degrees = compute_cliff_degrees(cliff_edges, n)
+        self.cliff_degrees = degrees
 
         assignment = walk_cliff_edges(cliff_edges, degrees, n, n_cliff_test, rng)
 
