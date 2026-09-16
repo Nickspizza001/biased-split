@@ -18,7 +18,7 @@ from splitters import (
 )
 from ml_models import train_and_eval_regressor, run_bias_sweep
 
-st.set_page_config(page_title="Chemoinformatics Bias & Split Lab", layout="wide")
+st.set_page_config(page_title="Biased Split", layout="wide")
 
 DATA_PATH = (
     Path(__file__).resolve().parents[1]
