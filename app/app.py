@@ -1,3 +1,4 @@
+import csv
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -26,10 +27,30 @@ DATA_PATH = (
     / "target_CHEMBL203-1.IC50.csv"
 )
 
+def detect_separator(source) -> str:
+    if isinstance(source, (str, Path)):
+        sample = Path(source).read_text(encoding="utf-8", errors="replace")[:4096]
+    else:
+        position = source.tell()
+        sample = source.read(4096)
+        source.seek(position)
+        if isinstance(sample, bytes):
+            sample = sample.decode("utf-8", errors="replace")
+
+    try:
+        return csv.Sniffer().sniff(sample, delimiters=",;\t|").delimiter
+    except csv.Error:
+        return ","
+
+
+def read_dataset(source):
+    return pd.read_csv(source, sep=detect_separator(source))
+
+
 @st.cache_data(show_spinner=False)
 def load_sample_dataset():
     np.random.seed(42)
-    df = pd.read_csv(DATA_PATH)
+    df = read_dataset(DATA_PATH)
     sample_smiles = df["standardized_smiles"]
     pchembl = df["pchembl_value"]
     return pd.DataFrame({"canonical_smiles": sample_smiles, "pchembl_value": pchembl})
@@ -50,7 +71,7 @@ st.sidebar.title("Configuration & Parameters")
 
 uploaded_file = st.sidebar.file_uploader("Upload CSV Dataset", type=["csv"])
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+    df = read_dataset(uploaded_file)
 else:
     st.sidebar.info("Using built-in sample dataset.")
     df = load_sample_dataset()
