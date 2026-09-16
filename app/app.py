@@ -6,6 +6,8 @@ import plotly.express as px
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from pathlib import Path
+from bokeh.models import ColumnDataSource, HoverTool
+from bokeh.plotting import figure
 
 from descriptors import smiles_to_ecfp4, compute_tsne, get_mol_b64_image, compute_similarity_matrix
 from splitters import (
@@ -221,29 +223,34 @@ with tab_tsne:
         "Partition": partition_labels, "Activity": activity_data,
         "SMILES": smiles_data, "MoleculeImage": b64_images,
     })
+    plot_df["Color"] = plot_df["Partition"].map({"Train": "#1f77b4", "Test": "#ff7f0e"})
 
-    fig_tsne = px.scatter(
-        plot_df, x="tSNE_1", y="tSNE_2", color="Partition",
-        color_discrete_map={"Train": "#1f77b4", "Test": "#ff7f0e"},
-        custom_data=["SMILES", "Partition", "Activity", "MoleculeImage"],
+    source = ColumnDataSource(plot_df)
+    fig_tsne = figure(
+        height=680,
+        sizing_mode="stretch_width",
+        tools="pan,wheel_zoom,box_zoom,reset,save",
+        x_axis_label="t-SNE Dimension 1",
+        y_axis_label="t-SNE Dimension 2",
+        toolbar_location="above",
     )
-    fig_tsne.update_traces(
-        marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color="white")),
-        hovertemplate=(
-            "<b>%{customdata[0]}</b><br>"
-            "Partition: %{customdata[1]}<br>"
-            "Activity: %{customdata[2]:.2f}<br>"
-            "<img src='%{customdata[3]}' width='150' height='150' style='border-radius: 6px;' /><extra></extra>"
-        ),
+    fig_tsne.scatter(
+        x="tSNE_1", y="tSNE_2", source=source, size=8,
+        color="Color",
+        alpha=0.8, legend_field="Partition",
     )
-    fig_tsne.update_layout(
-        height=680, margin=dict(l=20, r=20, t=30, b=20),
-        xaxis=dict(title="t-SNE Dimension 1", showgrid=True),
-        yaxis=dict(title="t-SNE Dimension 2", showgrid=True),
-        legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
-        hoverlabel=dict(bgcolor="white"),
-    )
-    st.plotly_chart(fig_tsne, width="stretch")
+    fig_tsne.add_tools(HoverTool(
+        tooltips="""
+            <div>
+                <div><strong>@SMILES</strong></div>
+                <div>Partition: @Partition</div>
+                <div>Activity: @Activity{0.00}</div>
+                <div><img src="@MoleculeImage" width="150" height="150"></div>
+            </div>
+        """,
+    ))
+    fig_tsne.legend.location = "top_left"
+    st.bokeh_chart(fig_tsne, width="stretch")
 
 with tab_dist:
     col_dist1, col_dist2 = st.columns(2)

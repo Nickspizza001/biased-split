@@ -1,4 +1,5 @@
 biased-split==0.1.1
+bokeh>=3.7.0
 joblib==1.5.3
 matplotlib==3.11.0
 networkx==3.6.1
