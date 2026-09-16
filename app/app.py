@@ -1,13 +1,16 @@
 import csv
 import streamlit as st
+import streamlit.components.v1 as st_components
 import pandas as pd
 import numpy as np
 import plotly.express as px
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from pathlib import Path
+from bokeh.embed import components as bokeh_components
 from bokeh.models import ColumnDataSource, HoverTool
 from bokeh.plotting import figure
+from bokeh.resources import CDN
 
 from descriptors import smiles_to_ecfp4, compute_tsne, get_mol_b64_image, compute_similarity_matrix
 from splitters import (
@@ -250,7 +253,12 @@ with tab_tsne:
         """,
     ))
     fig_tsne.legend.location = "top_left"
-    st.bokeh_chart(fig_tsne, width="stretch")
+    bokeh_script, bokeh_div = bokeh_components(fig_tsne)
+    st_components.html(
+        f"{CDN.render_js()}\n{bokeh_script}\n{bokeh_div}",
+        height=700,
+        scrolling=False,
+    )
 
 with tab_dist:
     col_dist1, col_dist2 = st.columns(2)
