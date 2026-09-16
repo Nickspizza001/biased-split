@@ -1,114 +1,18 @@
-altair==6.2.2
-annotated-types==0.8.0
-ansi2html==1.9.5
-anyio==4.15.1
-appnope @ file:///home/conda/feedstock_root/build_artifacts/appnope_1733332318622/work
-asttokens @ file:///home/conda/feedstock_root/build_artifacts/asttokens_1763409923949/work
-attrs==26.1.0
 biased-split==0.1.1
-blinker==1.9.0
-certifi==2026.6.17
-charset-normalizer==3.4.8
-click==8.5.0
-comm @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_comm_1753453984/work
-contourpy==1.3.3
-cycler==0.12.1
-dash==4.4.1
-debugpy @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_debugpy_1780390249/work
-decorator @ file:///home/conda/feedstock_root/build_artifacts/decorator_1779115150916/work
-docopt==0.6.2
-executing @ file:///home/conda/feedstock_root/build_artifacts/executing_1756729339227/work
-fastjsonschema==2.21.2
-Flask==3.1.3
-fonttools==4.63.0
-h11==0.16.0
-httptools==0.8.0
-idna==3.18
-importlib_metadata==9.0.1
-iniconfig==2.3.0
-ipykernel @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_ipykernel_1781101860/work
-ipython @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_ipython_1780654403/work
-ipython-genutils==0.2.0
-ipython_pygments_lexers @ file:///home/conda/feedstock_root/build_artifacts/ipython_pygments_lexers_1737123620466/work
-itsdangerous==2.2.0
-janus==2.0.0
-jedi @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jedi_1782251948/work
-Jinja2==3.1.6
 joblib==1.5.3
-jsonschema==4.26.0
-jsonschema-specifications==2025.9.1
-jupyter-dash==0.4.2
-jupyter_client @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jupyter_client_1781019994/work
-jupyter_core @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_jupyter_core_1760643864/work
-kiwisolver==1.5.0
-llvmlite==0.48.0
-MarkupSafe==3.0.3
 matplotlib==3.11.0
-matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1778264321245/work
-molplotly==1.1.5
--e git+https://github.com/Nickspizza001/Molprep.git@f309262a4aa26600c567099d09eb12c8d68f4a19#egg=Molprep
-narwhals==2.22.1
-nbformat==5.10.4
-nest-asyncio==1.6.0
-nest-asyncio2 @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_nest-asyncio2_1770973502/work
 networkx==3.6.1
 numba==0.66.0
 numpy==2.4.6
 packaging==26.0
 pandas==3.0.3
-parso @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_parso_1777722955/work
-patsy==1.0.2
-pexpect @ file:///home/conda/feedstock_root/build_artifacts/pexpect_1733301927746/work
-pillow==12.2.0
-pipreqs==0.4.13
-platformdirs @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_platformdirs_1779972894/work
 plotly==6.8.0
-pluggy==1.6.0
-prompt_toolkit @ file:///home/conda/feedstock_root/build_artifacts/prompt-toolkit_1756321756983/work
-protobuf==7.36.1
-psutil @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_psutil_1769678288/work
-ptyprocess @ file:///home/conda/feedstock_root/build_artifacts/ptyprocess_1733302279685/work/dist/ptyprocess-0.7.0-py2.py3-none-any.whl#sha256=92c32ff62b5fd8cf325bec5ab90d7be3d2a8ca8c8a3813ff487a8d2002630d1f
-pure_eval @ file:///home/conda/feedstock_root/build_artifacts/pure_eval_1733569405015/work
-pyarrow==24.0.0
-pydantic==2.13.5
-pydantic_core==2.46.5
-pydeck==0.9.3
-Pygments @ file:///home/conda/feedstock_root/build_artifacts/pygments_1774796700044/work
-pygraphviz @ file:///Users/runner/miniforge3/conda-bld/pygraphviz_1768734963753/work
-pynndescent==0.6.0
-pyparsing==3.3.2
-pytest==9.1.1
-python-dateutil @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_python-dateutil_1751104122/work
-python-multipart==0.0.32
-pyzmq @ file:///Users/runner/miniforge3/conda-bld/bld/rattler-build_pyzmq_1779484184/work
+pygraphviz
 rdkit==2026.3.3
-referencing==0.37.0
-requests==2.34.2
-retrying==1.4.2
-rpds-py==2026.6.3
 scikit-learn==1.9.0
-scipy==1.18.0
-setuptools==82.0.1
-six @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_six_1753199211/work
--e git+https://github.com/Nickspizza001/Molprep.git@f309262a4aa26600c567099d09eb12c8d68f4a19#egg=smiles_analyzer
-stack_data @ file:///home/conda/feedstock_root/build_artifacts/stack_data_1733569443808/work
 starlette==1.6.0
 statsmodels==0.14.6
 streamlit==1.63.0
-threadpoolctl==3.6.0
-toml==0.10.2
-tornado @ file:///Users/runner/miniforge3/conda-bld/tornado_1781007222426/work
 tqdm==4.68.3
-traitlets @ file:///home/conda/feedstock_root/build_artifacts/bld/rattler-build_traitlets_1780507822/work
-typing-inspection==0.4.4
-typing_extensions==4.16.0
-umap-learn==0.5.12
-urllib3==2.7.0
-uvicorn==0.53.0
-wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1780932827861/work
-websockets==16.1.1
-Werkzeug==3.1.8
-wheel==0.47.0
 xgboost==3.3.0
-yarg==0.1.10
-zipp==4.1.0
+
