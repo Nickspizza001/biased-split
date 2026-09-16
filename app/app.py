@@ -43,8 +43,8 @@ def detect_separator(source) -> str:
         return ","
 
 
-def read_dataset(source):
-    return pd.read_csv(source, sep=detect_separator(source))
+def read_dataset(source, separator=None):
+    return pd.read_csv(source, sep=separator or detect_separator(source))
 
 
 @st.cache_data(show_spinner=False)
@@ -70,8 +70,18 @@ def prepare_molecular_features(smiles_list):
 st.sidebar.title("Configuration & Parameters")
 
 uploaded_file = st.sidebar.file_uploader("Upload CSV Dataset", type=["csv"])
+separator_input = st.sidebar.text_input(
+    "CSV separator (optional)",
+    value="",
+    max_chars=1,
+    help="Leave blank to detect automatically. Examples: ; or tab",
+)
+if separator_input and separator_input in {"\n", "\r"}:
+    st.sidebar.error("Enter a single-character separator, such as ; or |.")
+    st.stop()
+
 if uploaded_file:
-    df = read_dataset(uploaded_file)
+    df = read_dataset(uploaded_file, separator=separator_input or None)
 else:
     st.sidebar.info("Using built-in sample dataset.")
     df = load_sample_dataset()
@@ -82,6 +92,13 @@ act_col = st.sidebar.selectbox(
     df.columns,
     index=1 if len(df.columns) > 1 else 0,
 )
+
+df = df.dropna(subset=[smi_col, act_col]).copy()
+df[act_col] = pd.to_numeric(df[act_col], errors="coerce")
+df = df.dropna(subset=[act_col]).reset_index(drop=True)
+if df.empty:
+    st.error("The selected SMILES and activity columns contain no usable rows.")
+    st.stop()
 
 # Added the new split types to the dropdown
 split_type = st.sidebar.selectbox(
