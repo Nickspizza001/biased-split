@@ -5,6 +5,7 @@ description = "Biased Data Splitting Method for Chemically Meaningful Model Vali
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "dash>=3.0.0",
     "matplotlib>=3.11.0",
     "networkx>=3.6.1",
     "numpy>=2.4.6",
