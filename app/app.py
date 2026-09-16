@@ -194,7 +194,7 @@ model, preds, metrics = train_and_eval_regressor(
 )
 progress.progress(100, text="Analysis complete.")
 
-st.title("Molecular Split & Activity Cliff Exploration Platform")
+st.title("Biased Split")
 
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 kpi1.metric("Dataset Size", f"{len(df)} compounds")
