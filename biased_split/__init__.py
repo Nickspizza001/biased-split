@@ -1,4 +1,4 @@
-"""Biased Split for Chemically Meaningful Model Validation"""
+"""Biased Split"""
 
 from biased_split.activity_cliff import ActivityCliffSplitter
 from biased_split.knn_failure import KNNFailureSplitter

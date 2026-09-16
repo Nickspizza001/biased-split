@@ -1,7 +1,7 @@
 [project]
 name = "biased-split"
 version = "0.1.1"
-description = "Biased Data Splitting Method for Chemically Meaningful Model Validation"
+description = "Biased Split"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
