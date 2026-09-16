@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 from rdkit import Chem
-from rdkit.Chem import Crippen
+from rdkit.Chem import Descriptors
 from pathlib import Path
 
 from descriptors import smiles_to_ecfp4, compute_tsne, get_mol_b64_image, compute_similarity_matrix
@@ -56,7 +56,7 @@ def load_sample_dataset():
     return pd.DataFrame({"canonical_smiles": sample_smiles, "pchembl_value": pchembl})
 
 @st.cache_data(show_spinner=False)
-def prepare_molecular_features(smiles_list):
+def prepare_molecular_features(smiles_list, image_limit=500):
     fps = np.array([smiles_to_ecfp4(s) for s in smiles_list])
     if len(fps) < 3:
         tsne_coords = np.zeros((len(fps), 2))
@@ -64,7 +64,10 @@ def prepare_molecular_features(smiles_list):
             tsne_coords[:, 0] = [-1.0, 1.0]
     else:
         tsne_coords = compute_tsne(fps, perplexity=min(30, max(2, (len(fps) - 1) // 3)))
-    b64_imgs = [get_mol_b64_image(s) for s in smiles_list]
+    b64_imgs = [
+        get_mol_b64_image(s) if index < image_limit else ""
+        for index, s in enumerate(smiles_list)
+    ]
     return fps, tsne_coords, b64_imgs
 
 st.sidebar.title("Configuration & Parameters")
@@ -139,7 +142,10 @@ ml_algo = st.sidebar.selectbox("Regression Model", ["Random Forest", "Ridge Regr
 # --- Data Prep ---
 smiles_data = df[smi_col].astype(str).tolist()
 activity_data = df[act_col].astype(float).values
+progress = st.progress(0, text="Preparing dataset...")
+progress.progress(15, text=f"Preparing {len(smiles_data):,} molecular structures...")
 fps, tsne_coords, b64_images = prepare_molecular_features(smiles_data)
+progress.progress(65, text="Molecular features ready. Calculating split...")
 
 # --- Splitting Logic Execution ---
 if split_type == "Activity Cliff Split":
@@ -162,7 +168,7 @@ elif split_type == "Substructure Distance Split":
 elif split_type == "Proxy Sorted Split (cLogP)":
     def compute_logp(smi):
         mol = Chem.MolFromSmiles(smi)
-        return Crippen.MolLogP(mol) if mol else 0.0
+        return Descriptors.MolLogP(mol) if mol else 0.0
     proxy_values = np.array([compute_logp(s) for s in smiles_data])
     splitter = ProxySortedSplitter(proxy_function=compute_logp, ideal_range_min=ideal_min, ideal_range_max=ideal_max, test_fraction=test_frac)
     train_idx, test_idx, effective_bias = splitter.split_for_intended_bias(smiles_data, proxy_values, activity_data, intended_bias, random_seed=42)
@@ -186,6 +192,7 @@ model, preds, metrics = train_and_eval_regressor(
     fps[test_idx], activity_data[test_idx],
     model_type=ml_algo,
 )
+progress.progress(100, text="Analysis complete.")
 
 st.title("Molecular Split & Activity Cliff Exploration Platform")
 
